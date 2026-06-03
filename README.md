@@ -1,5 +1,6 @@
 # BÀI TẬP 5: HỆ THỐNG GIÁM SÁT REALTIME VỚI DOCKER COMPOSE
-**Sinh viên thực hiện:** Luong Ngoc Nam  
+**Sinh viên thực hiện:** Lương Ngọc Nam  
+**Mã số sinh viên (MSSV):** K225480106049   
 **Chuyên ngành:** Kỹ thuật Máy tính (Computer Engineering)
 
 ---
@@ -126,3 +127,61 @@ bt5/
 │   └── Dockerfile
 └── frontend/
     └── index.html
+
+```
+
+> **Minh chứng 1:** Cấu trúc các thư mục `flask_api`, `frontend` tạo thành công trong hệ điều hành:
+<img width="655" height="144" alt="image" src="https://github.com/user-attachments/assets/5e192934-ab7f-44d6-8d34-2058a02cdb1b" />
+
+### 2. Kích hoạt hệ thống Multi-Container với Docker Compose
+Sử dụng tệp cấu hình `docker-compose.yml` tổng hợp để kéo (pull), build và thiết lập mạng kết nối cho 6 dịch vụ đồng thời.
+
+```bash
+docker compose up -d
+```
+
+### 3. Cấu hình Logic dòng chảy dữ liệu trên Node-RED
+* **Thu thập:** Node-RED tạo luồng nghiệp vụ gọi HTTP Request lấy dữ liệu liên tục sau một chu kỳ ngắn (ví dụ lấy dữ liệu chứng khoán hoặc thời tiết).
+* **Lưu trữ:** Dữ liệu tức thời được đẩy qua Driver MySQL vào bảng `current_data` trong **MariaDB**, dữ liệu chuỗi lịch sử được ghi nhận vào **InfluxDB**.
+* **Cảnh báo (Alert):** Sử dụng Node Function để phân tách ngưỡng bất thường. Khi dữ liệu vượt ngưỡng an toàn ($[A..B]$), kích hoạt Bot Telegram gửi tin nhắn định dạng rõ ràng vào Group chứa 3 thành viên (bao gồm User ID `1875746636`).
+
+> **Minh chứng 3:** Giao diện lập trình Flow và khối kết nối thành công của Node-RED:
+> ![Node-RED Flow]([CHÈN_ẢNH_VÀO_ĐÂY: Ảnh chụp màn hình luồng xử lý Node-RED thực tế])
+
+> **Minh chứng 4:** Tin nhắn cảnh báo gửi về nhóm Telegram hiển thị rõ giá trị lỗi vượt ngưỡng:
+> ![Telegram Alert Notification]([CHÈN_ẢNH_VÀO_ĐÂY: Ảnh chụp màn hình tin nhắn từ bot Telegram gửi vào group có 3 thành viên])
+
+---
+
+### 4. Giao diện Giám sát Dashboard (Nginx Frontend + Flask API + Grafana)
+* Nginx Web Server chạy giao diện tĩnh `index.html` (chứa các thành phần HTML/CSS/JS).
+* Đoạn mã Javascript chạy ngầm gọi AJAX đến Flask API (`cổng 5000`) để truy xuất giá trị tức thời từ MariaDB hiển thị thời gian thực lên khối trung tâm.
+* Khung `iFrame` nhúng trực tiếp Panel đồ thị đường từ Grafana hiển thị trực quan xu hướng lịch sử đã lưu trữ trong InfluxDB.
+
+> **Minh chứng 5:** Giao diện trang Web Monitor hiển thị số liệu tự động nhảy và đồ thị nhúng mượt mà:
+> ![Web Dashboard Monitor]([CHÈN_ẢNH_VÀO_ĐÂY: Ảnh chụp trình duyệt khi vào http://localhost hiển thị giao diện đồ thị và số liệu])
+
+---
+
+### 5. Kịch bản Đóng gói - Xóa - Khôi phục Hệ thống Offline
+Thực hiện giả lập xuất hệ thống thành tệp nén, dọn dẹp môi trường cũ để chứng minh tính độc lập và khả năng khôi phục nguyên trạng trên máy chủ không có internet.
+
+```bash
+# 1. Đóng gói hệ thống ra file .tar vật lý
+docker save -o backup_bt5_images.tar monitor_nginx monitor_flask_api nodered/node-red:latest mariadb:10.6 influxdb:2.7 grafana/grafana:latest
+
+# 2. Xóa sạch container và các image cũ trên máy host để làm sạch môi trường
+docker compose down
+docker rmi $(docker images -q)
+
+# 3. Khôi phục hoàn toàn từ file nén vật lý không cần Internet
+docker load -i backup_bt5_images.tar
+docker compose up -d
+
+```
+
+> **Minh chứng 6:** Lệnh nạp lại thành công ảnh đĩa từ file nén và hệ thống tái khởi động bình thường, dữ liệu được giữ nguyên vẹn thông qua các ổ đĩa cục bộ (Volumes):
+> ![Restore System Offline]([CHÈN_ẢNH_VÀO_ĐÂY: Ảnh chụp các dòng lệnh docker load chạy hoàn tất nạp image và docker ps cho thấy hệ thống hoạt động bình thường trở lại])
+
+---
+
