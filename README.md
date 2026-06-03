@@ -1,4 +1,8 @@
-# BÀI TẬP 5: TRIỂN KHAI HỆ THỐNG GIÁM SÁT REALTIME VỚI DOCKER COMPOSE
+# BÀI TẬP 5: HỆ THỐNG GIÁM SÁT REALTIME VỚI DOCKER COMPOSE
+**Sinh viên thực hiện:** Luong Ngoc Nam  
+**Chuyên ngành:** Kỹ thuật Máy tính (Computer Engineering)
+
+---
 
 ## PHẦN I: LÝ THUYẾT BÁO CÁO
 
@@ -98,7 +102,7 @@ Khi máy chủ thật bị cô lập hoàn toàn về mạng mạng internet, qu
 *(Yêu cầu: Máy chủ đã được cài đặt sẵn Docker Engine offline qua gói cài đặt cục bộ `.deb` hoặc `.rpm` trước đó).*
 
 * **Bước 4: Nạp (Load) Image và Khởi chạy hệ thống**
-    * Cắm USB vào máy chủ, copy toàn bộ file và thư mục mã nguồn vào vị trí lưu trữ trên máy chủ.
+    * Cắm USB vào máy chủ, copy toàn bộ file và thư mục mã nguồn vào vị trữ lưu trữ trên máy chủ.
     * Thực hiện giải nén nạp các Image vào Docker Engine của máy chủ bằng lệnh:
         ```bash
         docker load -i backup_bt5_images.tar
@@ -107,4 +111,18 @@ Khi máy chủ thật bị cô lập hoàn toàn về mạng mạng internet, qu
         ```bash
         docker compose up -d
         ```
-    * Hệ thống sẽ lập tức dựng lại toàn vẹn cấu trúc mạng, bộ lưu trữ và khởi chạy 6 container hoạt động bình thường mà hoàn toàn không cần kết nối tới Internet.
+
+---
+
+## PHẦN II: THỰC HÀNH ÁP DỤNG (MONITOR & ALERT REALTIME)
+
+### 1. Kiến trúc thư mục dự án `bt5`
+Hệ thống được tổ chức phân rã cấu trúc theo mô hình Microservices:
+```text
+bt5/
+├── docker-compose.yml
+├── flask_api/
+│   ├── app.py
+│   └── Dockerfile
+└── frontend/
+    └── index.html
