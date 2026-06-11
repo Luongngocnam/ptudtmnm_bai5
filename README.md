@@ -131,7 +131,8 @@ bt5/
 ```
 
 > **Minh chứng 1:** Cấu trúc các thư mục `flask_api`, `frontend` tạo thành công trong hệ điều hành:
-<img width="655" height="144" alt="image" src="https://github.com/user-attachments/assets/5e192934-ab7f-44d6-8d34-2058a02cdb1b" />
+
+<img width="1623" height="181" alt="image" src="https://github.com/user-attachments/assets/fd534ba2-1d2c-46f1-a653-45720056fc59" />
 
 ### 2. Kích hoạt hệ thống Multi-Container với Docker Compose
 Sử dụng tệp cấu hình `docker-compose.yml` tổng hợp để kéo (pull), build và thiết lập mạng kết nối cho 6 dịch vụ đồng thời.
@@ -146,10 +147,11 @@ docker compose up -d
 * **Cảnh báo (Alert):** Sử dụng Node Function để phân tách ngưỡng bất thường. Khi dữ liệu vượt ngưỡng an toàn ($[A..B]$), kích hoạt Bot Telegram gửi tin nhắn định dạng rõ ràng vào Group chứa 3 thành viên (bao gồm User ID `1875746636`).
 
 > **Minh chứng 3:** Giao diện lập trình Flow và khối kết nối thành công của Node-RED:
-> ![Node-RED Flow]([CHÈN_ẢNH_VÀO_ĐÂY: Ảnh chụp màn hình luồng xử lý Node-RED thực tế])
+<img width="1919" height="1077" alt="image" src="https://github.com/user-attachments/assets/054f3f47-1d10-4ee3-9c0f-9589f5655409" />
 
 > **Minh chứng 4:** Tin nhắn cảnh báo gửi về nhóm Telegram hiển thị rõ giá trị lỗi vượt ngưỡng:
-> ![Telegram Alert Notification]([CHÈN_ẢNH_VÀO_ĐÂY: Ảnh chụp màn hình tin nhắn từ bot Telegram gửi vào group có 3 thành viên])
+<img width="1555" height="1079" alt="image" src="https://github.com/user-attachments/assets/be2383d9-1645-42ba-b3ae-280fccae3115" />
+
 
 ---
 
@@ -159,7 +161,8 @@ docker compose up -d
 * Khung `iFrame` nhúng trực tiếp Panel đồ thị đường từ Grafana hiển thị trực quan xu hướng lịch sử đã lưu trữ trong InfluxDB.
 
 > **Minh chứng 5:** Giao diện trang Web Monitor hiển thị số liệu tự động nhảy và đồ thị nhúng mượt mà:
-> ![Web Dashboard Monitor]([CHÈN_ẢNH_VÀO_ĐÂY: Ảnh chụp trình duyệt khi vào http://localhost hiển thị giao diện đồ thị và số liệu])
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/80b5fd55-a19f-46b3-ba2a-e7eaf472981b" />
+
 
 ---
 
@@ -169,10 +172,13 @@ Thực hiện giả lập xuất hệ thống thành tệp nén, dọn dẹp mô
 ```bash
 # 1. Đóng gói hệ thống ra file .tar vật lý
 docker save -o backup_bt5_images.tar monitor_nginx monitor_flask_api nodered/node-red:latest mariadb:10.6 influxdb:2.7 grafana/grafana:latest
+<img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/4ef60dae-c9c0-4b28-8bb1-5a62c949fd68" />
+
 
 # 2. Xóa sạch container và các image cũ trên máy host để làm sạch môi trường
 docker compose down
 docker rmi $(docker images -q)
+
 
 # 3. Khôi phục hoàn toàn từ file nén vật lý không cần Internet
 docker load -i backup_bt5_images.tar
