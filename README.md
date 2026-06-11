@@ -171,23 +171,37 @@ Thực hiện giả lập xuất hệ thống thành tệp nén, dọn dẹp mô
 
 ```bash
 # 1. Đóng gói hệ thống ra file .tar vật lý
-docker save -o backup_bt5_images.tar monitor_nginx monitor_flask_api nodered/node-red:latest mariadb:10.6 influxdb:2.7 grafana/grafana:latest
+sudo cp ~/luongngocnam_bttl.tar.gz ~/monitor-app/frontend/
+
+```
+
 <img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/4ef60dae-c9c0-4b28-8bb1-5a62c949fd68" />
 
 
 # 2. Xóa sạch container và các image cũ trên máy host để làm sạch môi trường
+```
 docker compose down
-docker rmi $(docker images -q)
+sudo rm -rf ~/monitor-app
+```
+
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/d16146dc-5cbd-4b04-b5bd-f1b55f730f0a" />
 
 
 # 3. Khôi phục hoàn toàn từ file nén vật lý không cần Internet
-docker load -i backup_bt5_images.tar
+```
+tar -xzvf ~/luongngocnam_bttl.tar.gz -C ~
 docker compose up -d
 
 ```
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/af5cb7e0-68db-444b-bee4-d0d1aae78954" />
+
+
 
 > **Minh chứng 6:** Lệnh nạp lại thành công ảnh đĩa từ file nén và hệ thống tái khởi động bình thường, dữ liệu được giữ nguyên vẹn thông qua các ổ đĩa cục bộ (Volumes):
-> ![Restore System Offline]([CHÈN_ẢNH_VÀO_ĐÂY: Ảnh chụp các dòng lệnh docker load chạy hoàn tất nạp image và docker ps cho thấy hệ thống hoạt động bình thường trở lại])
 
----
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/c9c599c7-5aba-4ca9-b341-4430573a067a" />
+
+<img width="1919" height="1075" alt="image" src="https://github.com/user-attachments/assets/1bedfcd3-bd80-425b-a996-91386db17f3b" />
+
+
 
